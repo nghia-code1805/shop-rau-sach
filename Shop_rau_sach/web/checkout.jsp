@@ -108,6 +108,24 @@
                     </tr>
                 </tbody>
             </table>
+            <table class="table table-condensed">
+                <thead>
+                    <tr class="cart_menu">
+                        <td class="numberstk">Account Number</td>
+                        <td class="name-bank">Bank Name</td>
+                        <td class="name">Recipient's name</td>
+                        <td class="content">Content</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="account">03752366301</td>
+                        <td class="bankName">TPBANK</td>
+                        <td class="name">NGUYEN THI MO</td>
+                        <td class="content">THANH TOAN DON HANG (TAMFOOD) + ${sessionScope.LoginUser.uName}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="payment-options">
             <a class="btn btn-primary" href="PayController">Pay</a>

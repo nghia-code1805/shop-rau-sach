@@ -13,6 +13,7 @@ import Models.utilize.MailModel;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -78,7 +79,7 @@ public class PayController extends HttpServlet {
         
         //check quantity
         for (CartProduct cart : productCart) {
-            total = cart.getpPrice() * cart.getCartQuantity();
+            total += cart.getpPrice() * cart.getCartQuantity();
             
             //number of order greater than available
             if(cart.getCartQuantity() > cart.getpQuantity()) {
@@ -86,6 +87,8 @@ public class PayController extends HttpServlet {
                         + " which we have only " + cart.getpQuantity() + " pice <br/>";
             }
         }
+        
+        int grossProduct = productCart.size();
         
         //check money
 //        if(total > user.getuCash()) {
@@ -106,14 +109,18 @@ public class PayController extends HttpServlet {
         
         //reduce balance in user
 //        user.setuCash(user.getuCash() - total);
+
+        if (0 >= productCart.size()) {
+            request.getSession().setAttribute("message", "You have not selected any products yet "); 
+            response.sendRedirect("Failed.jsp");
+            return;
+        }
         
         //call transaction
-        if(new PaysDAO().startPayment(user, productCart)) {
-            //send mail of success
+        if(new PaysDAO().startPayment(user, productCart, total, grossProduct)) {
+            
             message = "Thank you for purchasing from Tamfood ^_^ <br/>"
                     + "Your product will be delivered tomorrow...";
-            
-//            new MailModel(user.getuEmail(), "Successfull Payment", message).sendMail();
             HttpSession session =  request.getSession();
             session.setAttribute("message", message);
             response.sendRedirect("Success.jsp");

@@ -16,6 +16,9 @@ public class History {
     private String hDate;
     private int hQuantity;
     private String uName;
+    private double uTotal;
+    private int hPaymentStatus;
+    private int hGrossProduct;
 
     /**
      * Constructor # creates new object for history
@@ -30,14 +33,20 @@ public class History {
      * @param hQuantity quantity product after user payment
      * @param pId the id of product
      * @param uId the id of user
+     * @param uName
+     * @param uTotal
+     * @param hPaymentStatus
      */
-    public History(int hId, int uId, int pId, String hDate, int hQuantity, String uName) {    
+    public History(int hId, int uId, int pId, String hDate, int hQuantity, String uName, double uTotal, int hPaymentStatus, int hGrossProduct) {    
         this.hId = hId;
         this.uId = uId;
         this.pId = pId;
         this.hDate = hDate;
         this.hQuantity = hQuantity;
         this.uName = uName;
+        this.uTotal = uTotal;
+        this.hPaymentStatus = hPaymentStatus;
+        this.hGrossProduct = hGrossProduct;
     }
 
     /**
@@ -127,9 +136,33 @@ public class History {
     public void setuName(String uName) {
         this.uName = uName;
     }
-    
-    
 
+    public double getuTotal() {
+        return uTotal;
+    }
+
+    public void setuTotal(double uTotal) {
+        this.uTotal = uTotal;
+    }
+
+    public int gethPaymentStatus() {
+        return hPaymentStatus;
+    }
+
+    public void sethPaymentStatus(int hPaymentStatus) {
+        this.hPaymentStatus = hPaymentStatus;
+    }
+
+    public int gethGrossProduct() {
+        return hGrossProduct;
+    }
+
+    public void sethGrossProduct(int hGrossProduct) {
+        this.hGrossProduct = hGrossProduct;
+    }
+    
+    
+    
     
     
 }

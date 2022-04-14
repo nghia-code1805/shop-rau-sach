@@ -6,6 +6,7 @@
 package Models.DAO;
 
 import Models.Entities.CartProduct;
+import Models.Entities.GeneralHistoryPay;
 import Models.Entities.History;
 import Models.Entities.Product;
 import Models.Entities.User;
@@ -47,9 +48,11 @@ public class PaysDAO extends DBConnection{
      *
      * @param user object User
      * @param sold all Product in cart
+     * @param total
+     * @param grossProduct
      * @return
      */
-    public boolean startPayment(User user, ArrayList<CartProduct> sold) {
+    public boolean startPayment(User user, ArrayList<CartProduct> sold, double total, int grossProduct) {
         try {
             //update user balance
 //            new UserDAO().updateUserBalance(user);
@@ -68,10 +71,22 @@ public class PaysDAO extends DBConnection{
                 history.setpId(itemSold.getpId());
                 history.setuId(user.getuId());
                 history.setuName(user.getuName());
+                history.setuTotal(total);
+                history.sethPaymentStatus(0);
+                history.sethGrossProduct(grossProduct);
                 history.sethQuantity(itemSold.getCartQuantity());
                 
                 new HistoryDAO().addUserHistory(history);
             }
+            
+            GeneralHistoryPay generalHistoryPay = new GeneralHistoryPay();
+            generalHistoryPay.setuId(user.getuId());
+            generalHistoryPay.setuName(user.getuName());
+            generalHistoryPay.setgTotal(total);
+            generalHistoryPay.setgPaymentStatus(0);
+            generalHistoryPay.setgGrossProduct(grossProduct);
+            
+            new GeneralHistoryPayDAO().addGeneralHistory(generalHistoryPay);
             
             //empty user cart
             new CartsDAO().deleteUserCart(user.getuId());

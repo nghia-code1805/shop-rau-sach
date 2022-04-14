@@ -37,12 +37,15 @@ public class HistoryDAO extends DBConnection{
      * @throws SQLException
      */
     public boolean addUserHistory(History h) throws SQLException {
-        PreparedStatement pst = conn.prepareStatement("INSERT INTO `history`(`uId`, `pId`, `hDate`, `hQuantity`, `uName`) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement pst = conn.prepareStatement("INSERT INTO `history`(`uId`, `pId`, `hDate`, `hQuantity`, `uName`, `uTotal`, `hPaymentStatus`, `hGrossProduct`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         pst.setInt(1, h.getuId());
         pst.setInt(2, h.getpId());
         pst.setString(3, h.gethDate());
         pst.setInt(4, h.gethQuantity());
         pst.setString(5, h.getuName());
+        pst.setDouble(6, h.getuTotal());
+        pst.setInt(7, h.gethPaymentStatus());
+        pst.setInt(8, h.gethGrossProduct());
         
         int executeUpdate = pst.executeUpdate();
            closeConnection();
@@ -65,16 +68,7 @@ public class HistoryDAO extends DBConnection{
             
             while(rs.next()){
                 listOfHistorys.add(new History(rs.getInt("hId"), rs.getInt(2),
-                rs.getInt(3), rs.getString(4), rs.getInt(5), rs.getString(6)));
-                
-//                History history = new History();
-//                history.sethId(rs.getInt(1));
-//                history.setuId(rs.getInt(2));
-//                history.setpId(rs.getInt(3));
-//                history.sethDate(rs.getString(4));
-//                history.sethQuantity(rs.getInt(5));
-//                history.setuName(rs.getString(6));
-//                listOfHistorys.add(history);
+                rs.getInt(3), rs.getString(4), rs.getInt(5), rs.getString(6), rs.getDouble(7), rs.getInt(8), rs.getInt(9)));
             }
             closeConnection();
             return listOfHistorys;

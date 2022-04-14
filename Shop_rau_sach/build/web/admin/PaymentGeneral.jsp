@@ -1,7 +1,7 @@
 <%-- 
-    Document   : history
-    Created on : Jul 19, 2020, 11:42:13 PM
-    Author     : vinhhqce140143
+    Document   : PaymentGeneral
+    Created on : Apr 14, 2022, 5:28:36 PM
+    Author     : NhaBaoViec
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -10,52 +10,50 @@
 
 <%@include file="Slidebar.jsp" %>
 <div class="col-sm-9 padding-right">
-    <h2>History</h2>
+    <h2>Payment General</h2>
     <div class="table-responsive cart_info">
         <table class="table table-condensed">
             <thead>
 
                 <tr class="cart_menu">
-                    <td class="quantity">HistoryId</td>
-                    <td class="quantity">UserId</td>
+                    <td class="quantity">Payment General Id</td>
+                    <td class="quantity">User Id</td>
                     <td class="quantity">User Name</td>
                     <td class="quantity">Total</td>
-                    <td class="quantity">ProductId</td>
-                    <td class="quantity">Date</td>
-                    <td class="quantity">Quantity</td>
+                    <td class="quantity">Payment Status</td>
+                    <td class="quantity">Gross Product</td>
                     <td></td>
                 </tr>
                 
             </thead>
+            
             <tbody>
 
-                <c:if test="${!empty requestScope.listOfHistorys}">
+                <c:if test="${!empty requestScope.listOfPayment}">
 
-                    <c:forEach items="${requestScope.listOfHistorys}" var="history">
+                    <c:forEach items="${requestScope.listOfPayment}" var="generalhistorypay">
                         <tr>
                             <td class="cart_quantity">
-                                <p>${history.hId}</p>
+                                <p>${generalhistorypay.gId}</p>
                             </td>
                             <td class="cart_quantity">
-                                <p>${history.uId}</p>
+                                <p>${generalhistorypay.uId}</p>
                             </td>
                             <td class="cart_quantity">
-                                <p>${history.uName}</p>
+                                <p>${generalhistorypay.uName}</p>
                             </td>
                             <td class="cart_quantity">
-                                <p>${history.uTotal}</p>
+                                <p>${generalhistorypay.gTotal}</p>
                             </td>
                             <td class="cart_quantity">
-                                <p>${history.pId}</p>
+                                <p>${generalhistorypay.gPaymentStatus}</p>
                             </td>
                             <td class="cart_quantity">
-                                <p>${history.hDate}</p>
+                                <p>${generalhistorypay.gGrossProduct}</p>
                             </td>
+                            
                             <td class="cart_quantity">
-                                <p>${history.hQuantity}</p>
-                            </td>
-                            <td class="cart_quantity">
-                                <a class="btn btn-danger" href="PaymentStaus?hId=${history.hId}">Payment Update</a>
+                                <a class="btn btn-danger" href="PaymentStaus?gId=${generalhistorypay.gId}">Payment Update</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -64,6 +62,3 @@
         </table>
     </div>
 </div>
-<%@include  file="Footer.jsp" %>
-
-<%@include  file="Notify.jsp" %>

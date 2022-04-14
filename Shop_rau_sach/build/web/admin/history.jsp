@@ -19,6 +19,7 @@
                     <td class="quantity">HistoryId</td>
                     <td class="quantity">UserId</td>
                     <td class="quantity">User Name</td>
+                    <td class="quantity">Total</td>
                     <td class="quantity">ProductId</td>
                     <td class="quantity">Date</td>
                     <td class="quantity">Quantity</td>
@@ -42,6 +43,9 @@
                                 <p>${history.uName}</p>
                             </td>
                             <td class="cart_quantity">
+                                <p>${history.uTotal}</p>
+                            </td>
+                            <td class="cart_quantity">
                                 <p>${history.pId}</p>
                             </td>
                             <td class="cart_quantity">
@@ -49,6 +53,9 @@
                             </td>
                             <td class="cart_quantity">
                                 <p>${history.hQuantity}</p>
+                            </td>
+                            <td class="cart_quantity">
+                                <a class="btn btn-danger" href="PaymentStaus?hId=${history.hId}">Payment Update</a>
                             </td>
                         </tr>
                     </c:forEach>
