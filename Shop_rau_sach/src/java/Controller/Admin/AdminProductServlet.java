@@ -10,6 +10,7 @@ import Models.Entities.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "AdminProductServlet", urlPatterns = {"/admin/AdminProductServlet"})
 public class AdminProductServlet extends HttpServlet {
 
-    ArrayList<Product> listOfProducts = new ArrayList<Product>();
+    List<Product> listOfProducts = new ArrayList<Product>();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -64,10 +65,33 @@ public class AdminProductServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ProductsDAO productsDAO = new ProductsDAO();
+        
+        int pageid = 1;
+        int totalPerPage = 5; //1 page only 9 product
+        int start;
+        
+        if(request.getParameter("page") != null) {
+            pageid = Integer.parseInt(request.getParameter("page"));
+        }
+        start = (pageid - 1) * totalPerPage;
+        
+        if(request.getParameter("cate") != null) {
+            int cate = Integer.parseInt(request.getParameter("cate"));
+            listOfProducts = productsDAO.getAllProductByCategoryId(cate, start, totalPerPage); //get all product by id of category with 1 to 9 product
+        } else {
+            listOfProducts = productsDAO.getAllProducts(start, totalPerPage); //get all product from 1 to 9 product
+        }
+        
+        int noOfRecords = productsDAO.getNoOfRecords(); //get no of records
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / totalPerPage);
+        
         //get all product from db
-        listOfProducts = productsDAO.getAllProducts();
+//        listOfProducts = productsDAO.getAllProducts();
         //set attribute to list of product
         request.setAttribute("listOfProducts", listOfProducts);
+        request.setAttribute("noOfPages", noOfPages);
+        request.setAttribute("currentPage", pageid);
+        request.setAttribute("query", request.getParameter("cate"));
         //forword to products.jsp
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/admin/Products.jsp");
         dispatcher.forward(request, response);

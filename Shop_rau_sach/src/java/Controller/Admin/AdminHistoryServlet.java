@@ -10,6 +10,7 @@ import Models.Entities.History;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "AdminHistoryServlet", urlPatterns = {"/admin/AdminHistoryServlet"})
 public class AdminHistoryServlet extends HttpServlet {
 
-    ArrayList<History> listOfHistorys = new ArrayList<>();
+    List<History> listOfHistorys = new ArrayList<>();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -65,10 +66,27 @@ public class AdminHistoryServlet extends HttpServlet {
             throws ServletException, IOException {
         HistoryDAO historyDAO = new HistoryDAO();
         try {
+            
+            int pageid = 1;
+            int totalPerPage = 5; //1 page only 9 product
+            int start;
+            
+            if(request.getParameter("page") != null) {
+            pageid = Integer.parseInt(request.getParameter("page"));
+            }
+            start = (pageid - 1) * totalPerPage;
+            
+            
             //get all history
-            listOfHistorys = historyDAO.getAllHistory();
+            listOfHistorys = historyDAO.getAllHistory(start, totalPerPage);
+            
+            int noOfRecords = historyDAO.getNoOfRecords(); //get no of records
+            int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / totalPerPage);
             //set all history to atttribute
             request.setAttribute("listOfHistorys", listOfHistorys);
+            request.setAttribute("noOfPages", noOfPages);
+            request.setAttribute("currentPage", pageid);
+//            request.setAttribute("query", request.getParameter("cate"));
             //forword to history.jsp
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/admin/history.jsp");
             dispatcher.forward(request, response);

@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author NhaBaoViec
  */
-@WebServlet(name = "PaymentStaus", urlPatterns = {"/admin/PaymentStaus"})
-public class PaymentStaus extends HttpServlet {
+@WebServlet(name = "PayStatus", urlPatterns = {"/admin/PayStatus"})
+public class PayStatus extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,7 +40,7 @@ public class PaymentStaus extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PaymentStaus</title>");            
+            out.println("<title>Servlet PaymentStaus</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet PaymentStaus at " + request.getContextPath() + "</h1>");
@@ -61,18 +61,24 @@ public class PaymentStaus extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-        
         int id = Integer.parseInt(request.getParameter("gId"));
-        
-        GeneralHistoryPay generalHistoryPay = new GeneralHistoryPayDAO().getIdGeneralHistoryPay(id);
-        
+        GeneralHistoryPayDAO generalHistoryPayDAO = new GeneralHistoryPayDAO();
+        int status = 1;
+
+        GeneralHistoryPay generalHistoryPay = new GeneralHistoryPayDAO().getIdGeneralHistory(id);
+
         if (generalHistoryPay == null) {
-            request.getSession().setAttribute("message", "Product not found");
+            request.getSession().setAttribute("message", "GeneralHistoryPay not found");
             response.sendRedirect("../Failed.jsp");
         } else {
-            request.setAttribute("product", generalHistoryPay);
-            request.setAttribute("type", "Edit");
+            PrintWriter out = response.getWriter();
+            generalHistoryPayDAO.editStatus(id, status);
+            out.print("<script>alert('payment status update successful(one is successful payment status)(not an unpaid status)')</script>");
+            out.print("<script>window.location.href='AdminPaymentGeneralServlet'</script>");
+            return;
+//            request.setAttribute("generalHistoryPay", generalHistoryPay);
+//            request.setAttribute("type", "Edit");
+//            request.getRequestDispatcher("/admin/PayStatus.jsp").forward(request, response);
         }
     }
 
@@ -87,7 +93,27 @@ public class PaymentStaus extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        GeneralHistoryPayDAO generalHistoryPayDAO = new GeneralHistoryPayDAO();
+//        int status = generalHistoryPayDAO.getIdGeneralHistoryPay(id);
+        int status = 1;
+        try {
+            if (request.getParameter("payId") != null && !request.getParameter("payId").trim().equals("")) {
+                PrintWriter out = response.getWriter();
+                int id = Integer.parseInt(request.getParameter("id"));
+                if (generalHistoryPayDAO.editStatus(id, status)) {
+                    out.print("<script>alert('Update successful')</script>");
+                    out.print("<script>window.location.href='AdminPaymentGeneralServlet'</script>");
+                    return;
+                } else {
+                    out.print("<script>alert('Update fail')</script>");
+                    out.print("<script>window.location.href='AdminPaymentGeneralServlet'</script>");
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
     }
 
     /**

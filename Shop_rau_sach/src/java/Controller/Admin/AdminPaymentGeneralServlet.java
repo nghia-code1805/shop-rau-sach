@@ -10,6 +10,7 @@ import Models.Entities.GeneralHistoryPay;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "AdminPaymentGeneralServlet", urlPatterns = {"/admin/AdminPaymentGeneralServlet"})
 public class AdminPaymentGeneralServlet extends HttpServlet {
 
-    ArrayList<GeneralHistoryPay> listOfPayment = new ArrayList<>();
+    List<GeneralHistoryPay> listOfPayment = new ArrayList<>();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -66,11 +67,26 @@ public class AdminPaymentGeneralServlet extends HttpServlet {
         
         GeneralHistoryPayDAO generalHistoryPayDAO = new GeneralHistoryPayDAO();
         try {
-            listOfPayment = generalHistoryPayDAO.getAll();
+            int pageid = 1;
+            int totalPerPage = 5; //1 page only 9 product
+            int start;
+            
+            if(request.getParameter("page") != null) {
+                pageid = Integer.parseInt(request.getParameter("page"));
+            }
+            start = (pageid - 1) * totalPerPage;
+            listOfPayment = generalHistoryPayDAO.getAll(start, totalPerPage);
+            
+            int noOfRecords = generalHistoryPayDAO.getNoOfRecords(); //get no of records
+            int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / totalPerPage);
+            
             request.setAttribute("listOfPayment", listOfPayment);
+            request.setAttribute("noOfPages", noOfPages);
+            request.setAttribute("currentPage", pageid);
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/admin/PaymentGeneral.jsp");
             dispatcher.forward(request, response);
         } catch (Exception e) {
+            e.getMessage();
         }
     }
 

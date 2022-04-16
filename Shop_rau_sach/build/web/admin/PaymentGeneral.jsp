@@ -24,9 +24,9 @@
                     <td class="quantity">Gross Product</td>
                     <td></td>
                 </tr>
-                
+
             </thead>
-            
+
             <tbody>
 
                 <c:if test="${!empty requestScope.listOfPayment}">
@@ -51,9 +51,9 @@
                             <td class="cart_quantity">
                                 <p>${generalhistorypay.gGrossProduct}</p>
                             </td>
-                            
+
                             <td class="cart_quantity">
-                                <a class="btn btn-danger" href="PaymentStaus?gId=${generalhistorypay.gId}">Payment Update</a>
+                                <a class="btn btn-danger" href="PayStatus?gId=${generalhistorypay.gId}">Payment Update</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -61,4 +61,33 @@
             </tbody>
         </table>
     </div>
+
+    <ul class="pagination">
+        <c:if test="${not empty query}">
+            <c:set var="stringQuery" value="&cate=${query}"/>
+        </c:if>
+
+        <c:if test="${currentPage != 1}">
+            <li><a href="AdminPaymentGeneralServlet?page=${currentPage - 1}${stringQuery}">&laquo;</a></li>
+            </c:if>
+
+        <c:forEach begin="1" end="${noOfPages}" var="i">
+            <c:choose>
+                <c:when test="${currentPage == i}">
+                    <li class="active"><a href="">${i}</a></li>
+                    </c:when>
+                    <c:otherwise>
+                    <li><a href="AdminPaymentGeneralServlet?page=${i}${stringQuery}">${i}</a></li>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+
+        <c:if test="${currentPage lt noOfPages}">
+            <li><a href="AdminPaymentGeneralServlet?page=${currentPage + 1}${stringQuery}">&raquo;</a></li>
+            </c:if>
+    </ul>
 </div>
+
+<%@include file="Footer.jsp" %>
+
+<%@include file="Notify.jsp" %>

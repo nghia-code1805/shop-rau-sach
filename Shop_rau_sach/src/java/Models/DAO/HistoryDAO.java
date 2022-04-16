@@ -22,6 +22,7 @@ public class HistoryDAO extends DBConnection{
     DBConnection db = new DBConnection();
     private Connection conn;
     private ResultSet rs = null;
+    public int noOfRecords;
 
     /**
      * constructor
@@ -59,22 +60,37 @@ public class HistoryDAO extends DBConnection{
      *
      * @return object History in database
      */
-    public ArrayList<History> getAllHistory(){
+    public ArrayList<History> getAllHistory(int start, int limit){
         ArrayList<History> listOfHistorys = new ArrayList<>();
-        History history = new History();
         try {
-            PreparedStatement pst = conn.prepareStatement("SELECT * FROM history");
+            PreparedStatement pst = conn.prepareStatement("SELECT * FROM history ORDER BY hId DESC LIMIT ? , ?");
+            pst.setInt(1, start);
+            pst.setInt(2, limit);
             rs = pst.executeQuery();
             
             while(rs.next()){
                 listOfHistorys.add(new History(rs.getInt("hId"), rs.getInt(2),
                 rs.getInt(3), rs.getString(4), rs.getInt(5), rs.getString(6), rs.getDouble(7), rs.getInt(8), rs.getInt(9)));
             }
+            rs = conn.prepareStatement("SELECT count(*) FROM history").executeQuery();
             closeConnection();
-            return listOfHistorys;
+            if (rs.next()) {
+                this.noOfRecords = rs.getInt(1);
+            }
+            
         } catch (SQLException ex) {
            ex.printStackTrace();
         }
-        return null;
-    } 
+       return listOfHistorys;
+    }
+
+    public int getNoOfRecords() {
+        return noOfRecords;
+    }
+
+    public void setNoOfRecords(int noOfRecords) {
+        this.noOfRecords = noOfRecords;
+    }
+    
+    
 }

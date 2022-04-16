@@ -25,7 +25,7 @@
                     <td class="quantity">Quantity</td>
                     <td></td>
                 </tr>
-                
+
             </thead>
             <tbody>
 
@@ -54,15 +54,40 @@
                             <td class="cart_quantity">
                                 <p>${history.hQuantity}</p>
                             </td>
-                            <td class="cart_quantity">
+<!--                            <td class="cart_quantity">
                                 <a class="btn btn-danger" href="PaymentStaus?hId=${history.hId}">Payment Update</a>
-                            </td>
+                            </td>-->
                         </tr>
                     </c:forEach>
                 </c:if>
             </tbody>
         </table>
     </div>
+
+    <ul class="pagination">
+        <c:if test="${not empty query}">
+            <c:set var="stringQuery" value="&cate=${query}"/>
+        </c:if>
+
+        <c:if test="${currentPage != 1}">
+            <li><a href="AdminHistoryServlet?page=${currentPage - 1}${stringQuery}">&laquo;</a></li>
+            </c:if>
+
+        <c:forEach begin="1" end="${noOfPages}" var="i">
+            <c:choose>
+                <c:when test="${currentPage == i}">
+                    <li class="active"><a href="">${i}</a></li>
+                    </c:when>
+                    <c:otherwise>
+                    <li><a href="AdminHistoryServlet?page=${i}${stringQuery}">${i}</a></li>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+
+        <c:if test="${currentPage lt noOfPages}">
+            <li><a href="AdminHistoryServlet?page=${currentPage + 1}${stringQuery}">&raquo;</a></li>
+            </c:if>
+    </ul>
 </div>
 <%@include  file="Footer.jsp" %>
 
