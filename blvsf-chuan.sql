@@ -12,6 +12,14 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Dumping structure for table kvt.ads
+CREATE TABLE IF NOT EXISTS `ads` (
+  `aId` int(11) NOT NULL AUTO_INCREMENT,
+  `aImage` varchar(200) CHARACTER SET latin1 NOT NULL,
+  `aURL` varchar(100) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`aId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf32;
+
 -- Dumping data for table kvt.ads: ~3 rows (approximately)
 /*!40000 ALTER TABLE `ads` DISABLE KEYS */;
 INSERT INTO `ads` (`aId`, `aImage`, `aURL`) VALUES
@@ -20,9 +28,30 @@ INSERT INTO `ads` (`aId`, `aImage`, `aURL`) VALUES
 	(3, 'upload/quangcao3.jpg', 'https://www.wessanen.com/organic-september-brings-feel-good-brands-together-first-time/');
 /*!40000 ALTER TABLE `ads` ENABLE KEYS */;
 
+-- Dumping structure for table kvt.cart
+CREATE TABLE IF NOT EXISTS `cart` (
+  `cartId` int(11) NOT NULL AUTO_INCREMENT,
+  `uId` int(11) NOT NULL,
+  `pId` int(11) NOT NULL,
+  `cartQuantity` int(11) NOT NULL,
+  PRIMARY KEY (`cartId`),
+  KEY `user_id` (`uId`),
+  KEY `product_id` (`pId`),
+  CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`pId`) REFERENCES `products` (`pId`),
+  CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`uId`) REFERENCES `users` (`uId`)
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf32;
+
 -- Dumping data for table kvt.cart: ~0 rows (approximately)
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
+
+-- Dumping structure for table kvt.category
+CREATE TABLE IF NOT EXISTS `category` (
+  `cId` int(11) NOT NULL AUTO_INCREMENT,
+  `cName` varchar(25) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`cId`),
+  KEY `id` (`cId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf32;
 
 -- Dumping data for table kvt.category: ~3 rows (approximately)
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
@@ -31,6 +60,16 @@ INSERT INTO `category` (`cId`, `cName`) VALUES
 	(2, 'Fruits'),
 	(3, 'Meat');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
+
+-- Dumping structure for table kvt.charge
+CREATE TABLE IF NOT EXISTS `charge` (
+  `chargeId` int(11) NOT NULL AUTO_INCREMENT,
+  `chargeCardNumber` tinytext CHARACTER SET latin1 NOT NULL,
+  `chargeValue` int(11) NOT NULL,
+  `chargeUsed` tinyint(1) NOT NULL,
+  `chargeTaken` tinyint(1) NOT NULL,
+  PRIMARY KEY (`chargeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf32;
 
 -- Dumping data for table kvt.charge: ~20 rows (approximately)
 /*!40000 ALTER TABLE `charge` DISABLE KEYS */;
@@ -57,6 +96,19 @@ INSERT INTO `charge` (`chargeId`, `chargeCardNumber`, `chargeValue`, `chargeUsed
 	(22, '1e4b30465b109d8e', 500000, 0, 0);
 /*!40000 ALTER TABLE `charge` ENABLE KEYS */;
 
+-- Dumping structure for table kvt.generalhistorypay
+CREATE TABLE IF NOT EXISTS `generalhistorypay` (
+  `gId` int(11) NOT NULL AUTO_INCREMENT,
+  `uId` int(11) NOT NULL,
+  `uName` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `gTotal` double DEFAULT NULL,
+  `gPaymentStatus` int(11) DEFAULT NULL,
+  `gGrossProduct` int(11) DEFAULT NULL,
+  PRIMARY KEY (`gId`),
+  KEY `generalhistorypay_FK` (`uId`),
+  CONSTRAINT `generalhistorypay_FK` FOREIGN KEY (`uId`) REFERENCES `users` (`uId`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Dumping data for table kvt.generalhistorypay: ~3 rows (approximately)
 /*!40000 ALTER TABLE `generalhistorypay` DISABLE KEYS */;
 INSERT INTO `generalhistorypay` (`gId`, `uId`, `uName`, `gTotal`, `gPaymentStatus`, `gGrossProduct`) VALUES
@@ -64,6 +116,24 @@ INSERT INTO `generalhistorypay` (`gId`, `uId`, `uName`, `gTotal`, `gPaymentStatu
 	(3, 28, 'user', 568000, 1, 4),
 	(4, 28, 'user', 936, 1, 1);
 /*!40000 ALTER TABLE `generalhistorypay` ENABLE KEYS */;
+
+-- Dumping structure for table kvt.history
+CREATE TABLE IF NOT EXISTS `history` (
+  `hId` int(11) NOT NULL AUTO_INCREMENT,
+  `uId` int(11) NOT NULL,
+  `pId` int(11) NOT NULL,
+  `hDate` varchar(25) NOT NULL,
+  `hQuantity` int(11) NOT NULL,
+  `uName` varchar(100) DEFAULT NULL,
+  `uTotal` double DEFAULT NULL,
+  `hPaymentStatus` int(1) DEFAULT NULL,
+  `hGrossProduct` int(10) DEFAULT NULL,
+  PRIMARY KEY (`hId`),
+  KEY `user_id` (`uId`),
+  KEY `product_id` (`pId`),
+  CONSTRAINT `history_ibfk_1` FOREIGN KEY (`pId`) REFERENCES `products` (`pId`),
+  CONSTRAINT `history_ibfk_2` FOREIGN KEY (`uId`) REFERENCES `users` (`uId`)
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf32;
 
 -- Dumping data for table kvt.history: ~61 rows (approximately)
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
@@ -131,6 +201,23 @@ INSERT INTO `history` (`hId`, `uId`, `pId`, `hDate`, `hQuantity`, `uName`, `uTot
 	(68, 28, 32, '2022-04-16T14:27:12.226', 4, 'user', 936, 0, 1);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 
+-- Dumping structure for table kvt.products
+CREATE TABLE IF NOT EXISTS `products` (
+  `pId` int(11) NOT NULL AUTO_INCREMENT,
+  `cId` int(11) DEFAULT NULL,
+  `pName` varchar(255) DEFAULT NULL,
+  `pImage` varchar(255) DEFAULT NULL,
+  `pPrice` double DEFAULT NULL,
+  `pWeight` int(11) DEFAULT NULL,
+  `pDescription` text DEFAULT NULL,
+  `pQuantity` int(11) DEFAULT NULL,
+  `pCreateDate` varchar(25) DEFAULT NULL,
+  PRIMARY KEY (`pId`),
+  KEY `cId` (`cId`),
+  KEY `pId` (`pId`),
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`cId`) REFERENCES `category` (`cId`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3;
+
 -- Dumping data for table kvt.products: ~31 rows (approximately)
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
 INSERT INTO `products` (`pId`, `cId`, `pName`, `pImage`, `pPrice`, `pWeight`, `pDescription`, `pQuantity`, `pCreateDate`) VALUES
@@ -167,6 +254,18 @@ INSERT INTO `products` (`pId`, `cId`, `pName`, `pImage`, `pPrice`, `pWeight`, `p
 	(32, 2, 'mhngbf', 'upload/1650094009759hinh-nen-may-cuc-dep.jpg', 234, 1212, 'HGDFSSÄA', 119, '2022-04-16');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 
+-- Dumping structure for table kvt.slides
+CREATE TABLE IF NOT EXISTS `slides` (
+  `sId` int(11) NOT NULL AUTO_INCREMENT,
+  `pId` int(11) NOT NULL,
+  `sTitle` varchar(100) CHARACTER SET latin1 NOT NULL,
+  `sSubtitle` varchar(150) CHARACTER SET latin1 NOT NULL,
+  `sDescription` text CHARACTER SET latin1 NOT NULL,
+  `sImage` varchar(200) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`sId`),
+  KEY `product_id` (`pId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf32;
+
 -- Dumping data for table kvt.slides: ~3 rows (approximately)
 /*!40000 ALTER TABLE `slides` DISABLE KEYS */;
 INSERT INTO `slides` (`sId`, `pId`, `sTitle`, `sSubtitle`, `sDescription`, `sImage`) VALUES
@@ -174,6 +273,23 @@ INSERT INTO `slides` (`sId`, `pId`, `sTitle`, `sSubtitle`, `sDescription`, `sIma
 	(2, 2, 'Tomato Malaysia', 'Tomato is a great source of vitamin C, potassium, folate, and vitamin K', 'Tomatoes are a very versatile ingredient that can be enjoyed as it is, used in salads, stews, sauces, and many more dishes!', 'upload/tomatomalay.jpg'),
 	(3, 29, 'Chicken', 'Chicken generally includes low fat in the meat itself', 'Chicken is the most common type of poultry in the world. Owing to the relative ease and low cost of raising them in comparison to animals such as cattle or hogs, chickens have become prevalent throughout the cuisine of cultures around the world, and their meat has been variously adapted to regional tastes', 'upload/chicken.jpg');
 /*!40000 ALTER TABLE `slides` ENABLE KEYS */;
+
+-- Dumping structure for table kvt.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `uId` int(11) NOT NULL AUTO_INCREMENT,
+  `uName` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `uEmail` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `uAddress` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `uJob` varchar(20) CHARACTER SET latin1 NOT NULL,
+  `uPassword` varchar(200) CHARACTER SET latin1 NOT NULL,
+  `uRole` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `uPhoto` varchar(200) CHARACTER SET latin1 NOT NULL DEFAULT 'upload/profile.jpg',
+  `uCreateDate` date DEFAULT NULL,
+  `uPhone` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`uId`),
+  UNIQUE KEY `username` (`uName`),
+  UNIQUE KEY `email` (`uEmail`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb3;
 
 -- Dumping data for table kvt.users: ~2 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
